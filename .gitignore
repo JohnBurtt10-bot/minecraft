@@ -21,6 +21,10 @@ pids
 # Bot data
 qtable_*.json
 stats/
+survival_graph.svg
+survival_stats.json
+*.svg
+survival_*.json
 
 # IDE and editor files
 .idea/

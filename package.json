@@ -12,6 +12,8 @@
     "prismarine-block": "^1.17.1",
     "prismarine-entity": "^2.4.0",
     "prismarine-item": "^1.14.0",
+    "prismarine-nbt": "^2.7.0",
+    "rcon-client": "^4.2.5",
     "vec3": "^0.1.8"
   }
 }

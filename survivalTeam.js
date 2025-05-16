@@ -13,7 +13,6 @@ class SurvivalBot {
         this.lastAction = null
         this.currentEpisode = 0
         this.episodeSteps = 0
-        this.maxEpisodeSteps = 2000
         this.learningInterval = null
         this.isConnecting = false
         this.reconnectAttempts = 0
@@ -21,7 +20,10 @@ class SurvivalBot {
     }
 
     connect() {
-        if (this.isConnecting) return
+        if (this.isConnecting) {
+            console.log(`${this.username} already connecting, skipping...`)
+            return
+        }
         if (this.reconnectAttempts >= this.maxReconnectAttempts) {
             console.log(`${this.username} exceeded max reconnection attempts. Stopping.`)
             return
@@ -33,30 +35,34 @@ class SurvivalBot {
         if (this.bot) {
             try {
                 this.bot.end()
+                this.bot = null
             } catch (err) {
                 // Ignore end errors
             }
-            this.bot = null
         }
 
-        console.log(`${this.username} attempting connection (attempt ${this.reconnectAttempts})...`)
+        // Add delay based on reconnect attempts
+        const delay = this.reconnectAttempts * 2000
+        setTimeout(() => {
+            console.log(`${this.username} attempting connection (attempt ${this.reconnectAttempts})...`)
 
-        this.bot = mineflayer.createBot({
-            host: 'localhost',
-            username: this.username,
-            port: 25565,
-            version: '1.20.4',
-            checkTimeoutInterval: 60000,
-            closeTimeout: 240*1000,
-            keepAlive: true,
-            connectTimeout: 30000
-        })
+            this.bot = mineflayer.createBot({
+                host: 'localhost',
+                username: this.username,
+                port: 25565,
+                version: '1.20.4',
+                checkTimeoutInterval: 60000,
+                closeTimeout: 240*1000,
+                keepAlive: true,
+                connectTimeout: 30000
+            })
 
-        // Load pathfinder plugin right after bot creation
-        this.bot.loadPlugin(pathfinder)
-        
-        this.bot.setMaxListeners(20)
-        this.setupBot()
+            // Load pathfinder plugin right after bot creation
+            this.bot.loadPlugin(pathfinder)
+            
+            this.bot.setMaxListeners(20)
+            this.setupBot()
+        }, delay)
     }
 
     setupBot() {
@@ -69,19 +75,20 @@ class SurvivalBot {
             const movements = new Movements(this.bot, mcData)
             this.bot.pathfinder.setMovements(movements)
             
-            // Small delay before starting to ensure world is loaded
+            // Longer delay before starting to ensure world is loaded
             setTimeout(() => {
                 this.startLearning()
                 this.stats.startLife()
-            }, 1000)
+            }, 5000)
         })
 
         this.bot.on('death', () => {
             if (!this.bot.entity) return
             const survivalTime = this.stats.endLife()
-            console.log(`${this.username} died. Survived for ${survivalTime.toFixed(1)} seconds.`)
+            console.log(`${this.username} died. Episode ${this.currentEpisode} completed. Survived for ${survivalTime.toFixed(1)} seconds.`)
             this.stats.generateGithubGraph()
             this.endEpisode()
+            this.currentEpisode++ // Increment episode counter on death
             this.resetWorld()
         })
 
@@ -90,10 +97,11 @@ class SurvivalBot {
             this.endEpisode()
             this.isConnecting = false
             
-            // Only attempt reconnect if we haven't exceeded max attempts
+            // Add delay before reconnect attempt
             if (this.reconnectAttempts < this.maxReconnectAttempts) {
-                console.log(`${this.username} scheduling reconnection...`)
-                setTimeout(() => this.connect(), 5000)
+                const reconnectDelay = 5000 + (this.reconnectAttempts * 2000)
+                console.log(`${this.username} scheduling reconnection in ${reconnectDelay/1000}s...`)
+                setTimeout(() => this.connect(), reconnectDelay)
             }
         })
 
@@ -152,14 +160,6 @@ class SurvivalBot {
         
         this.lastState = currentState
         this.lastAction = action
-
-        if (this.episodeSteps >= this.maxEpisodeSteps) {
-            const survivalTime = this.stats.endLife()
-            console.log(`${this.username} Episode ${this.currentEpisode} completed. Survived for ${survivalTime.toFixed(1)} seconds.`)
-            this.stats.generateGithubGraph()
-            this.endEpisode()
-            this.resetWorld()
-        }
     }
 
     async executeAction(action) {
@@ -258,28 +258,27 @@ class SurvivalBot {
 
     async resetWorld() {
         try {
-            // On death/reset, just reconnect to get a fresh spawn
             console.log(`${this.username} resetting through reconnection...`)
             
-            // End current connection
-            if (this.bot) {
-                this.bot.end()
-            }
-            
-            // Small delay before reconnecting
-            await new Promise(resolve => setTimeout(resolve, 2000))
-            
-            // Reset connection attempts since this is an intentional reset
+            // Reset connection state
+            this.isConnecting = false
             this.reconnectAttempts = 0
             
-            // Reconnect to get a fresh spawn
+            // End current connection if exists
+            if (this.bot) {
+                this.bot.end()
+                this.bot = null
+            }
+            
+            // Add delay before reconnecting
+            await new Promise(resolve => setTimeout(resolve, 5000))
+            
+            // Reconnect with fresh state
             this.connect()
             
         } catch (err) {
             console.log(`${this.username} error resetting world:`, err.message || err)
-            if (this.reconnectAttempts < this.maxReconnectAttempts) {
-                setTimeout(() => this.resetWorld(), 5000)
-            }
+            setTimeout(() => this.resetWorld(), 5000)
         }
     }
 }
