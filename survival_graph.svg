@@ -4,6 +4,9 @@
                 .survival-point:hover { fill: #239a3b; }
                 .axis { stroke: #666; stroke-width: 1; }
                 .axis-label { font-family: Arial; font-size: 12px; fill: #666; }
+                .trend-line { stroke: #239a3b; stroke-width: 2; stroke-dasharray: 5,5; }
+                .reward-point { fill: #0366d6; }
+                .reward-point:hover { fill: #2188ff; }
             </style>
             <rect width="720" height="400" fill="#ffffff"/>
             
@@ -16,89 +19,107 @@
             <!-- Labels -->
             <text x="10" y="200" class="axis-label" transform="rotate(-90, 10, 200)">Survival Time (seconds)</text>
             <text x="350" y="380" class="axis-label">Life Number</text>
-    <circle cx="50" cy="70" r="4" class="survival-point">
-                <title>Life 1: 114.3s</title>
+    <circle cx="50" cy="313.30477450022045" r="4" class="survival-point">
+                <title>Life 1: 27.4s</title>
             </circle>
-    <line x1="50" y1="70" x2="70" y2="341.90670737575124" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="70" cy="341.90670737575124" r="4" class="survival-point">
-                <title>Life 2: 3.3s</title>
+    <circle cx="70" cy="322.5302359457957" r="4" class="survival-point">
+                <title>Life 2: 20.5s</title>
             </circle>
-    <line x1="70" y1="341.90670737575124" x2="90" y2="341.92385418215855" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="90" cy="341.92385418215855" r="4" class="survival-point">
-                <title>Life 3: 3.3s</title>
+    <circle cx="90" cy="340.6792785540414" r="4" class="survival-point">
+                <title>Life 3: 6.9s</title>
             </circle>
-    <line x1="90" y1="341.92385418215855" x2="110" y2="341.1914405941893" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="110" cy="341.1914405941893" r="4" class="survival-point">
-                <title>Life 4: 3.6s</title>
+    <circle cx="110" cy="342.96820194353404" r="4" class="survival-point">
+                <title>Life 4: 5.2s</title>
             </circle>
-    <line x1="110" y1="341.1914405941893" x2="130" y2="341.1963396817343" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="130" cy="341.1963396817343" r="4" class="survival-point">
-                <title>Life 5: 3.6s</title>
+    <circle cx="130" cy="346.7853104095988" r="4" class="survival-point">
+                <title>Life 5: 2.4s</title>
             </circle>
-    <line x1="130" y1="341.1963396817343" x2="150" y2="341.309018695268" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="150" cy="341.309018695268" r="4" class="survival-point">
-                <title>Life 6: 3.5s</title>
+    <circle cx="150" cy="326.99672244264275" r="4" class="survival-point">
+                <title>Life 6: 17.1s</title>
             </circle>
-    <line x1="150" y1="341.309018695268" x2="170" y2="341.3065691514955" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="170" cy="341.3065691514955" r="4" class="survival-point">
-                <title>Life 7: 3.5s</title>
+    <circle cx="170" cy="328.2713280815748" r="4" class="survival-point">
+                <title>Life 7: 16.2s</title>
             </circle>
-    <line x1="170" y1="341.3065691514955" x2="190" y2="341.67889980491134" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="190" cy="341.67889980491134" r="4" class="survival-point">
-                <title>Life 8: 3.4s</title>
+    <circle cx="190" cy="329.4131063960286" r="4" class="survival-point">
+                <title>Life 8: 15.3s</title>
             </circle>
-    <line x1="190" y1="341.67889980491134" x2="210" y2="341.6813493486838" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="210" cy="341.6813493486838" r="4" class="survival-point">
-                <title>Life 9: 3.4s</title>
+    <circle cx="210" cy="332.233339083434" r="4" class="survival-point">
+                <title>Life 9: 13.2s</title>
             </circle>
-    <line x1="210" y1="341.6813493486838" x2="230" y2="341.43884451520904" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="230" cy="341.43884451520904" r="4" class="survival-point">
-                <title>Life 10: 3.5s</title>
+    <circle cx="230" cy="307.60929982941366" r="4" class="survival-point">
+                <title>Life 10: 31.6s</title>
             </circle>
-    <line x1="230" y1="341.43884451520904" x2="250" y2="341.66910162982145" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="250" cy="341.66910162982145" r="4" class="survival-point">
-                <title>Life 11: 3.4s</title>
+    <circle cx="250" cy="333.30937458072185" r="4" class="survival-point">
+                <title>Life 11: 12.4s</title>
             </circle>
-    <line x1="250" y1="341.66910162982145" x2="270" y2="341.4241472525742" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="270" cy="341.4241472525742" r="4" class="survival-point">
-                <title>Life 12: 3.5s</title>
+    <circle cx="270" cy="333.4381768347613" r="4" class="survival-point">
+                <title>Life 12: 12.3s</title>
             </circle>
-    <line x1="270" y1="341.4241472525742" x2="290" y2="341.5564226162877" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="290" cy="341.5564226162877" r="4" class="survival-point">
-                <title>Life 13: 3.4s</title>
+    <circle cx="290" cy="341.01604278074865" r="4" class="survival-point">
+                <title>Life 13: 6.7s</title>
             </circle>
-    <line x1="290" y1="341.5564226162877" x2="310" y2="341.801376993535" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="310" cy="341.801376993535" r="4" class="survival-point">
-                <title>Life 14: 3.3s</title>
+    <circle cx="310" cy="342.27588982807197" r="4" class="survival-point">
+                <title>Life 14: 5.8s</title>
             </circle>
-    <line x1="310" y1="341.801376993535" x2="330" y2="341.801376993535" 
-                    stroke="#196127" stroke-width="2" opacity="0.5"/>
-    <circle cx="330" cy="341.801376993535" r="4" class="survival-point">
-                <title>Life 15: 3.3s</title>
+    <circle cx="330" cy="273.8818929331263" r="4" class="survival-point">
+                <title>Life 15: 56.7s</title>
             </circle>
+    <circle cx="350" cy="280.78354704540664" r="4" class="survival-point">
+                <title>Life 16: 51.6s</title>
+            </circle>
+    <circle cx="370" cy="315.6674908477565" r="4" class="survival-point">
+                <title>Life 17: 25.6s</title>
+            </circle>
+    <circle cx="390" cy="261.59201119352923" r="4" class="survival-point">
+                <title>Life 18: 65.9s</title>
+            </circle>
+    <circle cx="410" cy="329.9511241446725" r="4" class="survival-point">
+                <title>Life 19: 14.9s</title>
+            </circle>
+    <circle cx="430" cy="265.3916776876929" r="4" class="survival-point">
+                <title>Life 20: 63.1s</title>
+            </circle>
+    <circle cx="450" cy="70" r="4" class="survival-point">
+                <title>Life 21: 208.7s</title>
+            </circle>
+    <circle cx="470" cy="307.60795813926745" r="4" class="survival-point">
+                <title>Life 22: 31.6s</title>
+            </circle>
+    <circle cx="490" cy="271.98742644662946" r="4" class="survival-point">
+                <title>Life 23: 58.1s</title>
+            </circle>
+    <circle cx="510" cy="316.0753646522147" r="4" class="survival-point">
+                <title>Life 24: 25.3s</title>
+            </circle>
+    <circle cx="530" cy="270.9288329212428" r="4" class="survival-point">
+                <title>Life 25: 58.9s</title>
+            </circle>
+    <circle cx="550" cy="121.93548387096774" r="4" class="survival-point">
+                <title>Life 26: 170.0s</title>
+            </circle>
+    <circle cx="570" cy="336.38855346635233" r="4" class="survival-point">
+                <title>Life 27: 10.1s</title>
+            </circle>
+    <circle cx="590" cy="277.4910394265233" r="4" class="survival-point">
+                <title>Life 28: 54.0s</title>
+            </circle>
+    <circle cx="610" cy="330.9560500642095" r="4" class="survival-point">
+                <title>Life 29: 14.2s</title>
+            </circle>
+    <circle cx="630" cy="341.9364422210722" r="4" class="survival-point">
+                <title>Life 30: 6.0s</title>
+            </circle>
+    <line x1="50" y1="337.76499483006194" x2="630" y2="263.12873692135486" class="trend-line"/>
     <text x="45" y="350" class="axis-label" text-anchor="end">0.0</text>
             <line x1="48" y1="350" x2="52" y2="350" class="axis"/>
-    <text x="45" y="293.90544761038257" class="axis-label" text-anchor="end">22.9</text>
-            <line x1="48" y1="293.90544761038257" x2="52" y2="293.90544761038257" class="axis"/>
-    <text x="45" y="238.05584959801234" class="axis-label" text-anchor="end">45.7</text>
-            <line x1="48" y1="238.05584959801234" x2="52" y2="238.05584959801234" class="axis"/>
-    <text x="45" y="181.96129720839497" class="axis-label" text-anchor="end">68.6</text>
-            <line x1="48" y1="181.96129720839497" x2="52" y2="181.96129720839497" class="axis"/>
-    <text x="45" y="126.11169919602472" class="axis-label" text-anchor="end">91.4</text>
-            <line x1="48" y1="126.11169919602472" x2="52" y2="126.11169919602472" class="axis"/>
-    <text x="45" y="70.01714680640731" class="axis-label" text-anchor="end">114.3</text>
-            <line x1="48" y1="70.01714680640731" x2="52" y2="70.01714680640731" class="axis"/>
+    <text x="45" y="294.0515209016158" class="axis-label" text-anchor="end">41.7</text>
+            <line x1="48" y1="294.0515209016158" x2="52" y2="294.0515209016158" class="axis"/>
+    <text x="45" y="237.96887278860714" class="axis-label" text-anchor="end">83.5</text>
+            <line x1="48" y1="237.96887278860714" x2="52" y2="237.96887278860714" class="axis"/>
+    <text x="45" y="182.0203936902229" class="axis-label" text-anchor="end">125.2</text>
+            <line x1="48" y1="182.0203936902229" x2="52" y2="182.0203936902229" class="axis"/>
+    <text x="45" y="125.93774557721429" class="axis-label" text-anchor="end">167.0</text>
+            <line x1="48" y1="125.93774557721429" x2="52" y2="125.93774557721429" class="axis"/>
+    <text x="45" y="69.98926647883007" class="axis-label" text-anchor="end">208.7</text>
+            <line x1="48" y1="69.98926647883007" x2="52" y2="69.98926647883007" class="axis"/>
 </svg>

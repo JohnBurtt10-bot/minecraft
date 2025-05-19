@@ -3,9 +3,10 @@ node_modules/
 package-lock.json
 
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
+hs_err_pid*.log
 
 # Runtime data
 pids
@@ -26,6 +27,23 @@ survival_stats.json
 *.svg
 survival_*.json
 
+# Minecraft server files
+world/
+banned-ips.json
+banned-players.json
+ops.json
+usercache.json
+whitelist.json
+server.properties
+server.properties.backup
+server.jar
+libraries/
+versions/
+
+# AWS files
+aws/
+awscliv2.zip
+
 # IDE and editor files
 .idea/
 .vscode/
@@ -40,4 +58,9 @@ survival_*.json
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db 
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+command.txt 

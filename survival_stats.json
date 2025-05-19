@@ -1,7 +1,10 @@
 {
-  "totalLives": 15,
-  "averageSurvival": 10.83506666666667,
-  "maxSurvival": 114.307,
-  "minSurvival": 3.297,
-  "lastSurvival": 3.347
+  "totalLives": 30,
+  "averageSurvival": 36.93336666666666,
+  "maxSurvival": 208.692,
+  "minSurvival": 2.396,
+  "lastSurvival": 6.01,
+  "statesExplored": 0,
+  "averageReward": 0,
+  "learningProgress": -33.52314897086649
 }

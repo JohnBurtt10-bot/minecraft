@@ -2,10 +2,11 @@ const mineflayer = require('mineflayer')
 const { pathfinder, Movements } = require('mineflayer-pathfinder')
 const QLearning = require('./qlearning')
 const StatsTracker = require('./statsTracker')
+const config = require('./config.json')
 
 class SurvivalBot {
     constructor(username) {
-        this.username = username
+        this.username = username + '_' + Math.floor(Math.random() * 1000) // Add random suffix to prevent duplicate logins
         this.bot = null
         this.qlearning = new QLearning()
         this.stats = new StatsTracker()
@@ -17,6 +18,7 @@ class SurvivalBot {
         this.isConnecting = false
         this.reconnectAttempts = 0
         this.maxReconnectAttempts = 5
+        this.isInitialized = false
     }
 
     connect() {
@@ -31,6 +33,7 @@ class SurvivalBot {
 
         this.isConnecting = true
         this.reconnectAttempts++
+        this.isInitialized = false
 
         if (this.bot) {
             try {
@@ -41,8 +44,11 @@ class SurvivalBot {
             }
         }
 
-        // Add delay based on reconnect attempts
-        const delay = this.reconnectAttempts * 2000
+        // Add delay based on reconnect attempts and bot name to stagger connections
+        const baseDelay = parseInt(this.username.replace(/Learner(\d+)_.+/, '$1')) * 5000
+        const reconnectDelay = this.reconnectAttempts * 2000
+        const delay = baseDelay + reconnectDelay
+        
         setTimeout(() => {
             console.log(`${this.username} attempting connection (attempt ${this.reconnectAttempts})...`)
 
@@ -50,7 +56,7 @@ class SurvivalBot {
                 host: 'localhost',
                 username: this.username,
                 port: 25565,
-                version: '1.20.4',
+                version: '1.20.2',
                 checkTimeoutInterval: 60000,
                 closeTimeout: 240*1000,
                 keepAlive: true,
@@ -66,8 +72,8 @@ class SurvivalBot {
     }
 
     setupBot() {
-        this.bot.once('spawn', () => {
-            console.log(`${this.username} has spawned! Starting from zero...`)
+        this.bot.on('spawn', () => {
+            console.log(`${this.username} has spawned!`)
             this.isConnecting = false
             this.reconnectAttempts = 0
             
@@ -75,21 +81,37 @@ class SurvivalBot {
             const movements = new Movements(this.bot, mcData)
             this.bot.pathfinder.setMovements(movements)
             
-            // Longer delay before starting to ensure world is loaded
+            // Only reset movement-related state, not learning state
+            this.lastState = null
+            this.lastAction = null
+            
+            // Wait a bit longer after respawn before starting movement
             setTimeout(() => {
-                this.startLearning()
+                this.isInitialized = true
+                // Only start learning if it's not already running
+                if (!this.learningInterval) {
+                    this.startLearning()
+                }
                 this.stats.startLife()
+                console.log(`${this.username} ready to move after respawn`)
             }, 5000)
         })
 
         this.bot.on('death', () => {
-            if (!this.bot.entity) return
             const survivalTime = this.stats.endLife()
-            console.log(`${this.username} died. Episode ${this.currentEpisode} completed. Survived for ${survivalTime.toFixed(1)} seconds.`)
+            const msg = `${this.username} died! Survived ${survivalTime.toFixed(1)}s. Episode ${this.currentEpisode}`
+            this.bot.chat(msg)
             this.stats.generateGithubGraph()
-            this.endEpisode()
-            this.currentEpisode++ // Increment episode counter on death
-            this.resetWorld()
+            
+            // Don't end episode or clear learning state on death
+            // Just increment episode counter
+            this.currentEpisode++
+            
+            if (config.resetWorldOnDeath) {
+                setTimeout(() => this.resetWorld(), 5000)
+            } else {
+                this.bot.chat(`${this.username} respawning... (no world reset)`)
+            }
         })
 
         this.bot.on('end', () => {
@@ -117,20 +139,42 @@ class SurvivalBot {
             this.endEpisode()
             this.isConnecting = false
         })
+
+        // Add position update handler to detect movement issues
+        this.bot.on('move', () => {
+            if (this.bot.entity && this.bot.entity.velocity) {
+                const speed = Math.sqrt(
+                    this.bot.entity.velocity.x * this.bot.entity.velocity.x +
+                    this.bot.entity.velocity.z * this.bot.entity.velocity.z
+                )
+                if (speed > 0.5) { // If moving too fast
+                    // Reset velocity to prevent "moved too quickly" warnings
+                    this.bot.entity.velocity.x = 0
+                    this.bot.entity.velocity.z = 0
+                }
+            }
+        })
     }
 
     startLearning() {
-        this.endEpisode() // Clear any existing interval
+        // Only start if not already running
+        if (this.learningInterval) {
+            return
+        }
         
-        this.currentEpisode++
-        this.episodeSteps = 0
-        this.lastState = null
-        this.lastAction = null
         this.learningInterval = setInterval(() => {
-            if (this.bot && this.bot.entity) {
+            if (!this.bot || !this.bot.entity) {
+                return
+            }
+            
+            if (!this.isInitialized) {
+                return
+            }
+            
+            try {
                 this.learningStep()
-            } else {
-                this.endEpisode()
+            } catch (err) {
+                console.log(`${this.username} error in learning step:`, err.message)
             }
         }, 50)
     }
@@ -163,33 +207,58 @@ class SurvivalBot {
     }
 
     async executeAction(action) {
+        if (!this.bot || !this.bot.entity) {
+            console.log(`${this.username} skipping action - bot not ready`)
+            return
+        }
+
         try {
             switch(action) {
                 case 'forward':
-                    this.bot.setControlState('forward', true)
-                    await this.bot.waitForTicks(5)
-                    this.bot.setControlState('forward', false)
-                    break
+                    if (!this.bot.entity || !this.bot.setControlState) {
+                        console.log(`${this.username} (forward) bot or setControlState missing. (bot: ${!!this.bot}, entity: ${!!this.bot?.entity}, setControlState: ${!!this.bot?.setControlState})`);
+                        return;
+                    }
+                    this.bot.setControlState('forward', true);
+                    await this.bot.waitForTicks(5);
+                    this.bot.setControlState('forward', false);
+                    break;
                 case 'back':
-                    this.bot.setControlState('back', true)
-                    await this.bot.waitForTicks(5)
-                    this.bot.setControlState('back', false)
-                    break
+                    if (!this.bot.entity || !this.bot.setControlState) {
+                        console.log(`${this.username} (back) bot or setControlState missing. (bot: ${!!this.bot}, entity: ${!!this.bot?.entity}, setControlState: ${!!this.bot?.setControlState})`);
+                        return;
+                    }
+                    this.bot.setControlState('back', true);
+                    await this.bot.waitForTicks(5);
+                    this.bot.setControlState('back', false);
+                    break;
                 case 'left':
-                    this.bot.setControlState('left', true)
-                    await this.bot.waitForTicks(5)
-                    this.bot.setControlState('left', false)
-                    break
+                    if (!this.bot.entity || !this.bot.setControlState) {
+                        console.log(`${this.username} (left) bot or setControlState missing. (bot: ${!!this.bot}, entity: ${!!this.bot?.entity}, setControlState: ${!!this.bot?.setControlState})`);
+                        return;
+                    }
+                    this.bot.setControlState('left', true);
+                    await this.bot.waitForTicks(5);
+                    this.bot.setControlState('left', false);
+                    break;
                 case 'right':
-                    this.bot.setControlState('right', true)
-                    await this.bot.waitForTicks(5)
-                    this.bot.setControlState('right', false)
-                    break
+                    if (!this.bot.entity || !this.bot.setControlState) {
+                        console.log(`${this.username} (right) bot or setControlState missing. (bot: ${!!this.bot}, entity: ${!!this.bot?.entity}, setControlState: ${!!this.bot?.setControlState})`);
+                        return;
+                    }
+                    this.bot.setControlState('right', true);
+                    await this.bot.waitForTicks(5);
+                    this.bot.setControlState('right', false);
+                    break;
                 case 'jump':
-                    this.bot.setControlState('jump', true)
-                    await this.bot.waitForTicks(5)
-                    this.bot.setControlState('jump', false)
-                    break
+                    if (!this.bot.entity || !this.bot.setControlState) {
+                        console.log(`${this.username} (jump) bot or setControlState missing. (bot: ${!!this.bot}, entity: ${!!this.bot?.entity}, setControlState: ${!!this.bot?.setControlState})`);
+                        return;
+                    }
+                    this.bot.setControlState('jump', true);
+                    await this.bot.waitForTicks(5);
+                    this.bot.setControlState('jump', false);
+                    break;
                 case 'click':
                     // Enhanced safety checks for clicking/attacking
                     const target = this.bot.blockAtCursor(4)
@@ -232,7 +301,6 @@ class SurvivalBot {
                     break
             }
         } catch (err) {
-            // Log any unexpected errors but don't crash
             console.log(`${this.username} action error:`, err.message || err)
         }
     }
@@ -243,6 +311,7 @@ class SurvivalBot {
             this.learningInterval = null
         }
         
+        // Save Q-table periodically
         if (this.currentEpisode % 10 === 0) {
             const fs = require('fs')
             try {
@@ -258,7 +327,7 @@ class SurvivalBot {
 
     async resetWorld() {
         try {
-            console.log(`${this.username} resetting through reconnection...`)
+            console.log(`${this.username} resetting world completely...`)
             
             // Reset connection state
             this.isConnecting = false
@@ -269,9 +338,52 @@ class SurvivalBot {
                 this.bot.end()
                 this.bot = null
             }
-            
-            // Add delay before reconnecting
-            await new Promise(resolve => setTimeout(resolve, 5000))
+
+            // Stop the server
+            console.log('Stopping Minecraft server...')
+            await new Promise((resolve) => {
+                const { exec } = require('child_process')
+                exec('pkill -f "java.*server.jar"', () => {
+                    // Wait a moment to ensure server is fully stopped
+                    setTimeout(resolve, 2000)
+                })
+            })
+
+            // Delete the world directory
+            console.log('Deleting world directory...')
+            const { execSync } = require('child_process')
+            execSync('rm -rf world world_nether world_the_end', { stdio: 'inherit' })
+
+            // Start the server again
+            console.log('Starting Minecraft server...')
+            const { spawn } = require('child_process')
+            const server = spawn('java', [
+                '-Xmx4G',
+                '-Xms4G',
+                '-XX:+UseG1GC',
+                '-XX:+ParallelRefProcEnabled',
+                '-XX:MaxGCPauseMillis=200',
+                '-XX:+UnlockExperimentalVMOptions',
+                '-XX:G1NewSizePercent=40',
+                '-XX:G1MaxNewSizePercent=50',
+                '-XX:G1HeapRegionSize=32M',
+                '-XX:G1ReservePercent=20',
+                '-XX:G1HeapWastePercent=5',
+                '-XX:+UseLargePages',
+                '-XX:+AlwaysPreTouch',
+                '-jar',
+                'server.jar',
+                'nogui'
+            ], {
+                detached: true,
+                stdio: 'inherit'
+            })
+            server.unref()
+
+            // Wait fixed 3 minutes for server to be ready
+            console.log('Waiting 3 minutes for server to be fully ready...')
+            await new Promise(resolve => setTimeout(resolve, 120000))
+            console.log('Server wait complete, connecting bot...')
             
             // Reconnect with fresh state
             this.connect()

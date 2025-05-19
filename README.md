@@ -1,0 +1,147 @@
+# Minecraft Learning Bot
+
+A reinforcement learning bot that learns to survive in Minecraft through trial and error using Q-learning.
+
+## Overview
+
+This project implements a Q-learning agent that learns to survive in Minecraft by:
+- Observing its environment (health, nearby entities, blocks, etc.)
+- Taking actions (movement, jumping, interaction)
+- Learning from rewards (health changes, survival time)
+- Building a Q-table of state-action values
+
+## Features
+
+- **State Representation**: The bot observes:
+  - Health and food levels
+  - Nearby entities (up to 5 closest, including type, distance, and hostility)
+  - Block information (what's below and in front)
+  - Environmental conditions (water, lava, fire, rain, time of day)
+  - Movement state (falling, sprinting, sneaking)
+
+- **Actions**: The bot can:
+  - Move (forward, back, left, right)
+  - Jump
+  - Interact (click)
+
+- **Learning**:
+  - Uses Q-learning algorithm
+  - Epsilon-greedy exploration strategy
+  - Saves and loads Q-tables between sessions
+  - Tracks survival statistics and generates graphs
+
+## Setup
+
+1. **Prerequisites**:
+   - Node.js (v14 or higher)
+   - Java 17 or higher
+   - Minecraft server jar (1.20.2)
+
+2. **Installation**:
+   ```bash
+   # Clone the repository
+   git clone <repository-url>
+   cd minecraft-learning-bot
+
+   # Install dependencies
+   npm install
+
+   # Place your Minecraft server.jar in the project root
+   # Accept the EULA
+   echo "eula=true" > eula.txt
+   ```
+
+3. **Configuration**:
+   - Edit `config.json` to set the number of bots
+   - Server settings can be modified in `server.properties`
+   - Use `start_server.sh test` for a flat world with one bot
+   - Use `start_server.sh` for normal world generation
+
+## Usage
+
+1. **Start the server**:
+   ```bash
+   # Normal mode (default world)
+   ./start_server.sh
+
+   # Test mode (flat world, single bot)
+   ./start_server.sh test
+   ```
+
+2. **Start the bots**:
+   ```bash
+   npm start
+   ```
+
+3. **Monitor learning**:
+   - Check `survival_stats.json` for survival statistics
+   - View `survival_graph.svg` for visual representation of learning progress
+   - Q-tables are saved in `stats/qtable_<botname>_<timestamp>.json`
+
+## Project Structure
+
+- `qlearning.js`: Core Q-learning implementation
+- `survivalTeam.js`: Bot behavior and state management
+- `statsTracker.js`: Statistics tracking and visualization
+- `index.js`: Bot initialization and server connection
+- `start_server.sh`: Server startup script
+
+## Learning Process
+
+The bot learns through:
+1. **State Observation**: Gathering information about its environment
+2. **Action Selection**: Using epsilon-greedy policy to choose actions
+3. **Reward Calculation**: Based on health changes and survival
+4. **Q-Value Updates**: Using the Q-learning formula to update state-action values
+
+## Learning Progress
+
+### Achievements
+Despite having a simple reward system based only on health changes, the bot has demonstrated impressive learning capabilities:
+
+1. **Combat Awareness**:
+   - Learned to identify and track hostile entities (slimes, zombies, etc.)
+   - Developed strategies to maintain safe distances from threats
+   - Successfully evades attacks by moving away when health is low
+
+2. **Tactical Decision Making**:
+   - Learned when to engage (attack) versus when to retreat
+   - Developed an understanding of entity distances and their impact on health
+   - Shows improved survival times as learning progresses
+
+3. **State Understanding**:
+   - Bot only has access to its current state (health, nearby entities, etc.)
+   - No explicit "rules" or heuristics were programmed
+   - All behaviors emerged purely through reinforcement learning
+
+### Video Demonstration
+A video demonstration of the bot's learning in a testing environment can be seen here:
+[Bot Learning Progress Video](C:\Users\johnb\Videos\Recording 2025-05-19 181125.mp4)
+
+The video shows the bot:
+- Identify and respond to threats
+- Successfully evading and engaging with hostile entities
+
+### Future Improvements
+While the current implementation shows promising results, potential improvements include:
+- Adding rewards for successful attacks
+- Incorporating food/health management
+- Expanding the state space to include more environmental factors
+- Implementing more sophisticated action sequences
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Uses [mineflayer](https://github.com/PrismarineJS/mineflayer) for Minecraft bot API
+- Inspired by reinforcement learning research in game environments 
