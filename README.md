@@ -8,7 +8,7 @@ Below is a live-updated graph of the bot's survival stats (updated every 50 seco
 
 Below is a live-updated view of the survival stats (updated every 50 seconds):
 
-<iframe src="http://15.156.77.30:3000/stats" width="800" height="400" frameborder="0" scrolling="no" title="Live Survival Stats"></iframe>
+<iframe src="http://15.156.77.30:3000/stats" width="800" height="200" frameborder="0" scrolling="no" title="Live Survival Stats"></iframe>
 
 A reinforcement learning bot that learns to survive in Minecraft through trial and error using Q-learning.
 
