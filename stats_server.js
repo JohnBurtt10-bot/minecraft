@@ -230,7 +230,7 @@ app.get('/stats', (req, res) => {
                 stats = { message: "No stats yet" };
             }
         }
-        // Return a simple HTML snippet (with inline styles) that can be embedded in an iframe.
+        // Return a simple HTML snippet (with inline styles) so that the survival stats can be embedded (using an iframe) in the README (or any markdown file).
         res.setHeader("Content-Type", "text/html");
         res.setHeader("X-Frame-Options", "ALLOWALL"); // Allow embedding in an iframe (e.g. in README.md)
         res.status(200).send(`
