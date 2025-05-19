@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minecraft Bot Stats</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px;
+            background: #0d1117;
+            color: #c9d1d9;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #stats { 
+            margin-bottom: 20px;
+            background: #161b22;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+        }
+        #graph { 
+            max-width: 100%;
+            background: #161b22;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+        }
+        .status { 
+            position: fixed; 
+            top: 10px; 
+            right: 10px; 
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .connected { 
+            background: #238636; 
+            color: #ffffff; 
+        }
+        .disconnected { 
+            background: #da3633; 
+            color: #ffffff; 
+        }
+        h1, h2 {
+            color: #58a6ff;
+        }
+        pre {
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #30363d;
+            overflow-x: auto;
+        }
+        /* Style for the SVG graph */
+        #graph svg {
+            width: 100%;
+            height: auto;
+            background: #161b22;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Minecraft Bot Learning Progress</h1>
+        <div id="status" class="status disconnected">Disconnected</div>
+        <div id="stats">Loading stats...</div>
+        <div id="graph">Loading graph...</div>
+    </div>
+
+    <script>
+        const statsDiv = document.getElementById('stats');
+        const graphDiv = document.getElementById('graph');
+        const statusDiv = document.getElementById('status');
+        
+        // Use the AWS instance URL
+        const serverUrl = 'http://15.156.77.30:3000';
+        const evtSource = new EventSource(serverUrl + '/stats-stream');
+        
+        evtSource.onopen = function() {
+            statusDiv.textContent = 'Connected';
+            statusDiv.className = 'status connected';
+        };
+        
+        evtSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            
+            if (data.type === 'stats') {
+                statsDiv.innerHTML = '<h2>Current Stats:</h2><pre>' + 
+                    JSON.stringify(data.data, null, 2) + '</pre>';
+            } else if (data.type === 'graph') {
+                graphDiv.innerHTML = data.data;
+            }
+        };
+        
+        evtSource.onerror = function(err) {
+            console.error("EventSource failed:", err);
+            statusDiv.textContent = 'Disconnected';
+            statusDiv.className = 'status disconnected';
+        };
+    </script>
+</body>
+</html> 

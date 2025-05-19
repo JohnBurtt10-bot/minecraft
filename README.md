@@ -1,5 +1,19 @@
 # Minecraft Learning Bot
 
+## Live Bot Progress
+[![Live Stats](https://img.shields.io/badge/status-live-brightgreen)](http://15.156.77.30:3000)
+
+Current bot learning progress is available in real-time:
+- [View Live Stats](http://15.156.77.30:3000)
+- [View on GitHub Pages](https://JohnBurtt10-bot.github.io/minecraft)
+
+The stats update automatically as the bot learns. You can see:
+- Current survival statistics
+- Learning progress graph
+- Real-time updates
+
+> Note: The stats server must be running on the AWS instance for the live view to work.
+
 A reinforcement learning bot that learns to survive in Minecraft through trial and error using Q-learning.
 
 ## Overview
@@ -128,6 +142,47 @@ While the current implementation shows promising results, potential improvements
 - Incorporating food/health management
 - Expanding the state space to include more environmental factors
 - Implementing more sophisticated action sequences
+
+## Monitoring Bot Progress
+
+### Real-time Stats Server
+The project includes a real-time stats server that allows you to monitor the bots' learning progress through a web interface. The server provides:
+
+- Live updates of survival statistics
+- Real-time visualization of the learning graph
+- Connection status indicator
+- Accessible from any web browser
+
+#### Starting the Stats Server
+```bash
+# Start the stats server in a tmux session
+tmux new-session -d -s stats-server && tmux send-keys -t stats-server 'node stats_server.js' C-m
+
+# View the server output
+tmux attach-session -t stats-server
+```
+
+#### Accessing the Stats
+1. The stats server runs on port 3000
+2. Access the web interface using your AWS instance's public IP:
+   ```
+   http://<your-aws-ip>:3000
+   ```
+3. To find your AWS instance's public IP:
+   ```bash
+   curl http://169.254.169.254/latest/meta-data/public-ipv4
+   ```
+
+#### Features
+- **Live Updates**: Stats and graph update automatically when changes occur
+- **Connection Status**: Visual indicator shows connection state
+- **Responsive Design**: Works on desktop and mobile browsers
+- **CORS Enabled**: Can be embedded in other web applications
+
+### Stats Files
+The following files are monitored and displayed by the stats server:
+- `survival_stats.json`: Contains current survival statistics
+- `survival_graph.svg`: Visual representation of learning progress
 
 ## Contributing
 
