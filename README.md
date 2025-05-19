@@ -1,18 +1,14 @@
 # Minecraft Learning Bot
 
 ## Live Bot Progress
-[![Live Stats](https://img.shields.io/badge/status-live-brightgreen)](http://15.156.77.30:3000)
 
-Current bot learning progress is available in real-time:
-- [View Live Stats](http://15.156.77.30:3000)
-- [View on GitHub Pages](https://JohnBurtt10-bot.github.io/minecraft)
+Below is a live-updated graph of the bot's survival stats (updated every 50 seconds):
 
-The stats update automatically as the bot learns. You can see:
-- Current survival statistics
-- Learning progress graph
-- Real-time updates
+<img src="http://15.156.77.30:3000/graph" alt="Live Bot Survival Graph" width="800" height="400" />
 
-> Note: The stats server must be running on the AWS instance for the live view to work.
+Below is a live-updated view of the survival stats (updated every 50 seconds):
+
+<iframe src="http://15.156.77.30:3000/stats" width="800" height="400" frameborder="0" scrolling="no" title="Live Survival Stats"></iframe>
 
 A reinforcement learning bot that learns to survive in Minecraft through trial and error using Q-learning.
 
