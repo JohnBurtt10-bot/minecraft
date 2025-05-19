@@ -130,7 +130,8 @@ Despite having a simple reward system based only on health changes, the bot has 
 
 ### Video Demonstration
 A video demonstration of the bot's learning in a testing environment can be seen here:
-[Bot Learning Progress Video](C:\Users\johnb\Videos\Recording 2025-05-19 181125.mp4)
+[Bot Learning Progress Video](https://github.com/user-attachments/assets/0215b804-2abe-4955-9b24-57961aec5cf5)
+
 
 The video shows the bot:
 - Identify and respond to threats
