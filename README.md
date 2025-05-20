@@ -4,7 +4,7 @@
 
 Below is a live-updated graph of the bot's survival stats (updated every 50 seconds):
 
-![Live Chart](http://15.156.77.30:3000/graph) 
+![Live Chart](http://15.156.77.30:3000/graph?buster=1)
 
 A reinforcement learning bot that learns to survive in Minecraft through trial and error using Q-learning.
 
