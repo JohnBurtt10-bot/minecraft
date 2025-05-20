@@ -4,7 +4,7 @@
 
 Below is a live-updated graph of the bot's survival stats (updated every 50 seconds):
 
-<img src="http://15.156.77.30:3000/graph" alt="Live Bot Survival Graph" width="800" height="400" />
+![Live Chart](http://15.156.77.30:3000/graph)
 
 A reinforcement learning bot that learns to survive in Minecraft through trial and error using Q-learning.
 
